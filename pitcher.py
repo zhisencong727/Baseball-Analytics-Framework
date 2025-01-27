@@ -14,7 +14,7 @@ def normalizeArr(arr):
     return arr
 
 class pitcher():
-    def __init__(self,firstname,lastname,hand,input_mlbam,day_night,home_away):
+    def __init__(self,firstname,lastname,hand=None,input_mlbam=0,day_night=None,home_away=None):
         self.firstname = firstname
         self.lastname = lastname
         self.hand = hand
@@ -37,9 +37,8 @@ class pitcher():
             self.mlbam_id = mlbam_id
             dict1 = playerid_reverse_lookup([self.mlbam_id],key_type='mlbam').to_dict()
             self.bbref_id = next(iter(dict1['key_bbref'].values()))
-        
 
-        df = statcast_pitcher('2024-3-28','2024-8-22',player_id=mlbam_id)
+        df = statcast_pitcher('2018-3-28','2019-8-22',player_id=mlbam_id)
         
         pitchLogFileName = self.firstname+"_"+self.lastname+"_"+"pitch_log.csv"
         pitchLogFileName = os.path.join("pitchLogFiles",pitchLogFileName)
@@ -55,7 +54,7 @@ class pitcher():
         #print(self.vsPitchTypeSplits)
         #print(self.inPlaySplits)
 
-        
+        """
         splitCoeffcient = getSplitCoeffcient(self.firstname,self.lastname,self.bbref_id,day_night,home_away,True)
 
         for eachPitch in self.vsPitchTypeSplits.keys(): 
@@ -82,20 +81,10 @@ class pitcher():
         self.twoStrikeFoulPercentage *= splitCoeffcient
 
         self.splitCoefficient = splitCoeffcient
+        """
         
         
         
 
         
-def main():
-    # hand here is also opposing player's hand, maybe change this later when
-    # we have both pitcher and batter in a matchup
-    pitcher1 = pitcher("nestor","cortes","L",0,"day","away")
-    #pitcher1.getPitchLog()
-    #pitcher1.getPitchSelection()
-    #pitcher1.getPitchSplits()
-    #print(pitcher1.pitchSelection)
-    #print(pitcher1.vsPitchTypeSplits)
-    #print(pitcher1.inPlaySplits)
 
-main()

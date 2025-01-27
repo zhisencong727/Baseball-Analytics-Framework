@@ -1,0 +1,20 @@
+
+
+
+
+
+
+Visualization of Results:
+    Target Distribution Summary : Display the target label distrbution in the validation set and compare it with the predicted labels in order to gauge how well calibrated the model is.
+
+    Confusion Matrix : Constructed and displayed to specifically see how well the model does on each individual classes and whether it is over or under predicting each class
+
+    Classification Report (Precision Recall F1) : Classification Report from sklearn metrics to show the precision, recall, and f1 score on each class
+
+
+Different Time Period:
+    Model Drift
+    Data Drift
+
+Further Plans for Improvement:
+    Model Calibration
