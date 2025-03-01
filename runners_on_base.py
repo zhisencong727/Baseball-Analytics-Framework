@@ -1,5 +1,3 @@
-
-
 # stats from teamranking.com Houston Astros
 # 34.31 at bats + 2.78 walks + 0.42 hbp + roughly 0.5 sacrafices comes out to around 38 PAs per game
 # walk rate 2.78 walk per game = 7.41%
@@ -24,7 +22,7 @@ class Result(Enum):
 
 
 import random
-def inning(current_batter,num_innings,larry_pos):
+def inning(current_batter,num_innings):
     runs = 0
     batting_avg_coef = [1.20,1.12,1.08,1.04,1.00,0.96,0.92,0.88,0.80] # [1.20,1.12,1.08,1.04,1.00,0.96,0.92,0.88,0.80]
     walk_coef = [1.04,1.08,1.12,1.24,1.04,0.96,0.92,0.84,0.76] # [1.04,1.08,1.12,1.24,1.04,0.96,0.92,0.84,0.76]
@@ -37,20 +35,10 @@ def inning(current_batter,num_innings,larry_pos):
         currBatter = 1
     else:
         currBatter = current_batter
-    larry = larry_pos
+    
     inning_pa = 0
     inning_runners = 0
     while outs < 3:
-        if currBatter == larry:
-            #print("LARRY!")
-            inning_pa += 1
-            if first_base == "Occupied":
-                inning_runners += 1
-            if second_base == "Occupied":
-                inning_runners += 1
-            if third_base == "Occupied":
-                inning_runners += 1
-            #inning_runners += (first_base=="Occupied" + second_base=="Occupied" + third_base=="Occupied")
         prob = random.uniform(0,1)
         result = None
         
@@ -209,26 +197,18 @@ def inning(current_batter,num_innings,larry_pos):
 
         currBatter = ((currBatter % 9) + 1)
     #print("Runs is:",runs)
-    return inning_pa,inning_runners,currBatter,runs
+    return currBatter,runs
 
-for pos in range(1,10,1):
-    total_runners = 0
-    plate_apperances = 0
-    total_runs_scored = 0
-    print("Larry at pos:",pos)
-    num_innings = 900000
-    batter = 1
-    for i in range(num_innings):
-        i_pa, i_runner, next_batter, i_runs_scored = inning(batter,i,pos)
-        batter = next_batter
-        plate_apperances += i_pa
-        total_runners += i_runner
-        total_runs_scored += i_runs_scored
-    average_runner_on_base = round(total_runners / plate_apperances,3)
-    average_runs_scored = round(total_runs_scored/(num_innings/9),3)
-    print("Plate_Apperance is:",plate_apperances)
-    print("Total Runner:",total_runners)
-    print("Average Runner on base:",average_runner_on_base)
-    print("Average Runs Scored Per Game:",average_runs_scored)
-   
-    
+
+total_runners = 0
+plate_apperances = 0
+total_runs_scored = 0
+num_innings = 900000
+batter = 1
+for i in range(num_innings):
+    next_batter, i_runs_scored = inning(batter,i)
+    batter = next_batter
+    total_runs_scored += i_runs_scored
+average_runs_scored = round(total_runs_scored/(num_innings/9),3)
+print("Average Runs Scored Per Game:",average_runs_scored)
+

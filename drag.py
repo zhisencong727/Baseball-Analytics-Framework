@@ -8,7 +8,7 @@ from sklearn.preprocessing import StandardScaler
 import numpy as np
 
 # Data
-x_2015, y_2015 = get_data(["2017","2018"])
+x_2015, y_2015 = get_data(["2018"])
 
 np.set_printoptions(suppress=True)
 
@@ -51,7 +51,7 @@ loss_fn = nn.MSELoss()
 optimizer = optim.Adam(model.parameters(), lr=0.001)
 
 # Training the model
-num_epochs = 50000
+num_epochs = 25000
 for epoch in range(num_epochs):
     model.train()
     optimizer.zero_grad()
@@ -92,50 +92,50 @@ elif mbe < 0:
 else:
     print("Model has no average bias.")
 
-# Testing on 2016 data
-x_2016, y_2016 = get_data(["2019"])
+# Testing on test year data
+x_test_year, y_test_year = get_data(["2019"])
 
-test_mean_raw = np.mean(x_2016, axis=0)
-test_std_raw = np.std(x_2016, axis=0)
+test_mean_raw = np.mean(x_test_year, axis=0)
+test_std_raw = np.std(x_test_year, axis=0)
 
 print("Feature means (test set, raw):", test_mean_raw)
 print("Feature stds (test set, raw):", test_std_raw)
 
 
 
-x_2016_scaled = scaler_x.transform(x_2016)
-x_2016_scaled = torch.tensor(x_2016_scaled, dtype=torch.float32)
+x_test_year_scaled = scaler_x.transform(x_test_year)
+x_test_year_scaled = torch.tensor(x_test_year_scaled, dtype=torch.float32)
 
 # Model predictions on test set
 with torch.no_grad():
-    y_2016_pred = model(x_2016_scaled).numpy().flatten()
+    y_test_year_pred = model(x_test_year_scaled).numpy().flatten()
 
-errors_2016 = y_2016_pred - np.array(y_2016)
-mbe_2016 = np.mean(errors_2016)
+errors_test_year = y_test_year_pred - np.array(y_test_year)
+mbe_test_year = np.mean(errors_test_year)
 
-for i in range(len(errors_2016)):
-    print("Predicted:", round(y_2016_pred[i], 3), "| Actual:", y_2016[i])
-    if y_2016[i] > 150 and y_2016[i] < 200:
+for i in range(len(errors_test_year)):
+    print("Predicted:", round(y_test_year_pred[i], 3), "| Actual:", y_test_year[i])
+    if y_test_year[i] > 150 and y_test_year[i] < 200:
         print("_________________")
-if mbe_2016 > 0:
-    print(f"Model is overpredicting on average by {mbe_2016:.2f} feet.")
-elif mbe_2016 < 0:
-    print(f"Model is underpredicting on average by {-mbe_2016:.2f} feet.")
+if mbe_test_year > 0:
+    print(f"Model is overpredicting on average by {mbe_test_year:.2f} feet.")
+elif mbe_test_year < 0:
+    print(f"Model is underpredicting on average by {-mbe_test_year:.2f} feet.")
 else:
     print("Model has no average bias.")
 
 # Bin analysis
-y_2016 = np.array(y_2016)
-y_2016_pred = model(torch.tensor(x_2016_scaled, dtype=torch.float32)).detach().numpy().flatten()
-errors_2016 = y_2016_pred - y_2016
+y_test_year = np.array(y_test_year)
+y_test_year_pred = model(torch.tensor(x_test_year_scaled, dtype=torch.float32)).detach().numpy().flatten()
+errors_test_year = y_test_year_pred - y_test_year
 
 bin_ranges = [(150, 200), (200, 250), (250, 300), (300, 350),(350,400),(400,450),(450,500)]
 
 for (low, high) in bin_ranges:
-    mask = (y_2016 >= low) & (y_2016 < high)
-    subset_actual = y_2016[mask]
-    subset_pred = y_2016_pred[mask]
-    subset_errors = errors_2016[mask]
+    mask = (y_test_year >= low) & (y_test_year < high)
+    subset_actual = y_test_year[mask]
+    subset_pred = y_test_year_pred[mask]
+    subset_errors = errors_test_year[mask]
     
     if len(subset_actual) == 0:
         print(f"No data points in range [{low}, {high})")
@@ -154,4 +154,4 @@ for (low, high) in bin_ranges:
     print("-" * 50)
 
 
-print(np.mean(y_2016))
+print(np.mean(y_test_year))

@@ -8,11 +8,11 @@ def get_data(year):
         for row in reader:
             if "NA" in row.values():
                 continue
-            if float(row["hit_vertical_angle"]) < 00:
+            if float(row["hit_vertical_angle"]) < 10:
                 continue
-            if float(row["hit_distance"]) < 0:
+            if float(row["hit_distance"]) < 300:
                 continue
-            if float(row["hit_vertical_angle"]) > 80:
+            if float(row["hit_vertical_angle"]) > 70:
                 continue
 
 
